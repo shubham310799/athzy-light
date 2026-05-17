@@ -70,16 +70,38 @@
       font-family:'Bebas Neue',sans-serif;
       font-size:1.9rem; letter-spacing:5px; color:var(--green);
       flex-shrink:0;
+      white-space:nowrap;
+      --brand-flag-fill:var(--bg);
     }
 
+    .brand-flag-a {
+      position:relative;
+      display:inline-block;
+      font:inherit;
+      letter-spacing:inherit;
+    }
+    .brand-flag-a::after {
+      content:'';
+      position:absolute;
+      left:50%;
+      top:46%;
+      width:.31em;
+      height:.23em;
+      background:var(--brand-flag-fill, var(--black));
+      clip-path:polygon(0 0,100% 50%,0 100%);
+      transform:translate(-32%,-50%);
+    }
+
+
     .nav-links {
-      display:flex; gap:32px; list-style:none;
+      display:flex; align-items:center; gap:32px; list-style:none;
     }
     .nav-links a {
       text-decoration:none; color:var(--muted);
       font-size:.78rem; letter-spacing:1.5px;
       text-transform:uppercase; transition:color .2s;
       font-family:'Syne',sans-serif;
+      line-height:1;
     }
     .nav-links a:hover { color:var(--green) }
 
@@ -100,31 +122,49 @@
 
     @media(max-width:820px){
       nav {
-        padding:0 16px;
-        gap:12px;
-        justify-content:center;
-        flex-wrap:wrap;
-        height:auto;
+        padding:0 14px;
+        gap:clamp(10px,2vw,18px);
+        justify-content:space-between;
+        flex-wrap:nowrap;
+        height:var(--nav-h);
         min-height:var(--nav-h);
-        padding-block:10px;
       }
-      .logo { position:absolute; left:16px; top:14px; font-size:1.55rem; letter-spacing:4px }
+      .logo {
+        position:static;
+        font-size:clamp(1.24rem,4.3vw,1.55rem);
+        letter-spacing:clamp(2px,.9vw,4px);
+      }
       .nav-links {
         display:flex;
-        justify-content:center;
-        gap:clamp(12px,3.2vw,24px);
-        width:100%;
-        padding:0 72px;
+        justify-content:flex-end;
+        align-items:center;
+        gap:clamp(7px,1.6vw,14px);
+        width:auto;
+        min-width:0;
+        padding:0;
+        flex:1;
       }
-      .nav-links a { font-size:.66rem; letter-spacing:1px }
+      .nav-links a {
+        font-size:clamp(.48rem,1.55vw,.62rem);
+        letter-spacing:.7px;
+        white-space:nowrap;
+      }
       .nav-cta { display:none }
     }
 
     @media(max-width:560px){
-      nav { align-items:flex-end; padding-top:42px }
-      .nav-links { padding:0; gap:10px; overflow-x:auto; scrollbar-width:none }
+      nav { padding-inline:8px; gap:6px }
+      .logo { font-size:clamp(.96rem,3.8vw,1.18rem); letter-spacing:2px }
+      .nav-links { gap:clamp(4px,1vw,7px); overflow:visible; scrollbar-width:none }
       .nav-links::-webkit-scrollbar { display:none }
-      .nav-links a { white-space:nowrap; font-size:.61rem }
+      .nav-links a { font-size:clamp(.38rem,1.42vw,.5rem); letter-spacing:.45px }
+    }
+
+    @media(max-width:400px){
+      nav { padding-inline:6px; gap:5px }
+      .logo { font-size:.9rem; letter-spacing:1.6px }
+      .nav-links { gap:4px }
+      .nav-links a { font-size:.36rem; letter-spacing:.35px }
     }
 
     /* ===================== HERO ===================== */
@@ -700,6 +740,7 @@
       font-family:'Bebas Neue',sans-serif;
       font-size:clamp(8rem,21vw,17rem); letter-spacing:12px;
       color:#fff;
+      --brand-flag-fill:var(--green);
       display:block;
       user-select:none;
       position:relative;
@@ -723,14 +764,7 @@
       inset:0;
       pointer-events:none;
     }
-    .big-logo-base::before {
-      color:rgba(255,255,255,.92);
-      -webkit-text-stroke:1px rgba(255,255,255,.24);
-      clip-path:polygon(0 0,100% 0,100% 34%,0 52%);
-      transform:translateZ(9px);
-      opacity:.56;
-      mix-blend-mode:screen;
-    }
+    .big-logo-base::before { display:none }
     .big-logo-base::after {
       color:transparent;
       background:linear-gradient(110deg, transparent 0%, transparent 38%, rgba(255,255,255,.88) 49%, transparent 60%, transparent 100%);
@@ -776,6 +810,212 @@
       animation:ripple-anim .55s linear; pointer-events:none;
     }
     @keyframes ripple-anim { to { transform:scale(4); opacity:0 } }
+
+
+
+    /* ===================== PROFESSIONAL MOTION LAYER ===================== */
+    .scroll-progress {
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg, var(--green), #9cffc7, var(--green));
+      transform:scaleX(var(--scroll-progress,0));
+      transform-origin:left;
+      z-index:9997;
+      box-shadow:0 0 18px rgba(0,200,83,.42);
+      pointer-events:none;
+    }
+
+    nav.scrolled {
+      background:rgba(242,244,240,.82);
+      box-shadow:0 12px 34px rgba(0,0,0,.08);
+    }
+    .nav-links a { position:relative }
+    .nav-links a::after {
+      content:'';
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-9px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+      transform:scaleX(0);
+      transform-origin:center;
+      transition:transform .28s ease;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { transform:scaleX(1) }
+
+    .hero-badge {
+      position:relative;
+      overflow:hidden;
+      animation:badgeSettle .9s .08s both, badgeFloat 4.8s 1s ease-in-out infinite;
+    }
+    .hero-badge::after {
+      content:'';
+      position:absolute;
+      inset:-40% -65%;
+      background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.58), transparent 60%);
+      transform:translateX(-80%);
+      animation:softSweep 4.6s 1.4s ease-in-out infinite;
+    }
+    .hero-title .dark,
+    .hero-title .gn {
+      text-shadow:0 18px 40px rgba(0,0,0,.08);
+      transform:translateY(calc(var(--hero-drift,0) * 1px));
+      transition:transform .18s linear;
+    }
+    .hero-title .gn {
+      background:linear-gradient(90deg, var(--green), #64ff9f, var(--green));
+      background-size:180% 100%;
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      animation:greenSheen 5.8s ease-in-out infinite;
+    }
+    .hero-shape { filter:blur(.2px); mix-blend-mode:multiply }
+    .hero-shape-1 { animation:floatA 8s ease-in-out infinite, shapeOrbit 18s linear infinite }
+    .hero-shape-2 { animation:floatA 10s 2s ease-in-out infinite, shapeOrbit 22s reverse linear infinite }
+
+    .btn-p,.btn-s,.nav-cta {
+      transform:translate3d(var(--mag-x,0), var(--mag-y,0), 0);
+      will-change:transform;
+    }
+    .btn-s:hover {
+      background:rgba(0,200,83,.06);
+      box-shadow:0 10px 26px rgba(0,200,83,.08);
+    }
+
+    .sec-label {
+      position:relative;
+      width:max-content;
+    }
+    .sec-label::after {
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:-8px;
+      width:36px;
+      height:2px;
+      background:var(--green);
+      transform-origin:left;
+      transform:scaleX(.35);
+      transition:transform .55s cubic-bezier(.22,1,.36,1);
+    }
+    .visible .sec-label::after,
+    .reveal.visible .sec-label::after { transform:scaleX(1) }
+
+    .feat-card-inner {
+      animation:cardBreath 5.6s ease-in-out infinite;
+      animation-delay:calc(var(--i) * .28s);
+    }
+    .feat-track-dot:hover { transform:translateY(-2px) scaleX(1.08) }
+
+    .owner-card.visible {
+      transform:perspective(900px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)) translateY(var(--owner-lift,0)) !important;
+    }
+    .owner-card:hover {
+      --owner-lift:-8px;
+      border-color:rgba(0,200,83,.35);
+      box-shadow:0 18px 54px rgba(0,200,83,.15), 0 18px 60px rgba(0,0,0,.07);
+    }
+    .owner-icon {
+      transition:transform .35s cubic-bezier(.34,1.56,.64,1), background .25s ease;
+    }
+    .owner-card:hover .owner-icon {
+      transform:translateY(-4px) rotate(-6deg) scale(1.08);
+      background:rgba(0,200,83,.18);
+    }
+
+    .steps-list::after {
+      content:'';
+      position:absolute;
+      left:27px;
+      top:0;
+      width:2px;
+      height:calc(var(--steps-progress,0) * 100%);
+      background:linear-gradient(var(--green), rgba(0,200,83,.1));
+      border-radius:99px;
+      transition:height .16s linear;
+    }
+    .step.visible .step-num {
+      animation:stepPop .55s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .step-content {
+      transition:transform .3s ease, opacity .3s ease;
+    }
+    .step:hover .step-content { transform:translateX(6px) }
+
+    .faq-item {
+      transition:opacity .5s ease, transform .5s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .faq-item:hover {
+      border-color:rgba(0,200,83,.24);
+      box-shadow:0 12px 36px rgba(0,200,83,.08);
+      transform:translateY(-2px);
+    }
+
+    .footer-col ul a {
+      display:inline-block;
+      transform:translateX(0);
+    }
+    .footer-col ul a:hover { transform:translateX(5px) }
+    .social-btn { position:relative; overflow:hidden }
+    .social-btn::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at center, rgba(255,255,255,.45), transparent 58%);
+      transform:scale(0);
+      opacity:0;
+      transition:transform .32s ease, opacity .32s ease;
+    }
+    .social-btn:hover::after { transform:scale(1.7); opacity:1 }
+
+    @keyframes badgeSettle {
+      from { opacity:0; transform:translateY(-12px) scale(.96) }
+      to { opacity:1; transform:translateY(0) scale(1) }
+    }
+    @keyframes badgeFloat {
+      0%,100% { transform:translateY(0) }
+      50% { transform:translateY(-6px) }
+    }
+    @keyframes softSweep {
+      0%,38% { transform:translateX(-80%) }
+      68%,100% { transform:translateX(80%) }
+    }
+    @keyframes greenSheen {
+      0%,100% { background-position:0 0 }
+      50% { background-position:100% 0 }
+    }
+    @keyframes shapeOrbit {
+      from { translate:0 0 }
+      50% { translate:18px -10px }
+      to { translate:0 0 }
+    }
+    @keyframes cardBreath {
+      0%,100% { box-shadow:0 12px 54px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.05) }
+      50% { box-shadow:0 18px 66px rgba(0,0,0,.18), 0 0 0 1px rgba(0,200,83,.12) }
+    }
+    @keyframes stepPop {
+      0% { transform:scale(.82); opacity:.5 }
+      65% { transform:scale(1.08) }
+      100% { transform:scale(1); opacity:1 }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after {
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.001ms !important;
+      }
+    }
 
     /* ===================================================
        RESPONSIVE BREAKPOINTS
@@ -862,10 +1102,35 @@
     /* ===================== SECTION DIVIDER WAVE ===================== */
     .wave-divider { overflow:hidden; line-height:0; pointer-events:none }
     .wave-divider svg { display:block; width:100% }
+
+
+    /* ===================== FINAL MOTION OVERRIDES ===================== */
+    .hero-badge {
+      animation:badgeSettle .9s .08s both, badgeFloat 4.8s 1s ease-in-out infinite;
+    }
+    .hero-stat {
+      transition:transform .35s ease, filter .35s ease;
+    }
+    .hero-stat:hover {
+      transform:translateY(-6px);
+      filter:drop-shadow(0 12px 18px rgba(0,200,83,.12));
+    }
+    .ticker-strip {
+      box-shadow:0 14px 40px rgba(0,200,83,.16) inset;
+    }
+    .ticker-inner span {
+      transition:transform .28s ease, color .28s ease;
+    }
+    .ticker-inner span:hover {
+      transform:translateY(-2px);
+      color:#fff;
+    }
+
   </style>
 </head>
 <body>
 
+  <div class="scroll-progress" aria-hidden="true"></div>
   <div class="cur" id="cur"></div>
   <div class="cur-ring" id="curRing"></div>
 
@@ -880,7 +1145,7 @@
 
   <!-- NAV -->
   <nav>
-    <div class="logo">ATHZY</div>
+    <div class="logo"><span class="brand-flag-a">A</span>THZY</div>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
       <li><a href="#owners">For Owners</a></li>
@@ -1225,7 +1490,7 @@
   <footer id="brand">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo">ATHZY</div>
+        <div class="logo"><span class="brand-flag-a">A</span>THZY</div>
         <p>The ultimate platform for sports lovers. Find, book, and play — anytime, anywhere.</p>
         <div class="social-row">
           <a href="#" class="social-btn">𝕏</a>
@@ -1361,6 +1626,70 @@
     });
 
 
+
+    // ===================== SITE MOTION SYSTEM =====================
+    const root=document.documentElement;
+    const sections=[...document.querySelectorAll('section[id], footer[id]')];
+    const navAnchors=[...document.querySelectorAll('.nav-links a')];
+    const magneticItems=[...document.querySelectorAll('.btn-p,.btn-s,.nav-cta')];
+    const stepsList=document.querySelector('.steps-list');
+    const heroDark=document.querySelector('.hero-title .dark');
+    const heroGreen=document.querySelector('.hero-title .gn');
+
+    function updateSiteMotion(){
+      const maxScroll=Math.max(1, document.documentElement.scrollHeight-window.innerHeight);
+      const p=window.scrollY/maxScroll;
+      root.style.setProperty('--scroll-progress', p.toFixed(4));
+      if(nav) nav.classList.toggle('scrolled', window.scrollY>18);
+
+      const heroDrift=Math.min(44, window.scrollY*.045);
+      if(heroDark) heroDark.style.setProperty('--hero-drift', heroDrift.toFixed(2));
+      if(heroGreen) heroGreen.style.setProperty('--hero-drift', (-heroDrift*.4).toFixed(2));
+
+      let activeId='';
+      sections.forEach(section=>{
+        const r=section.getBoundingClientRect();
+        if(r.top <= window.innerHeight*.38 && r.bottom >= window.innerHeight*.25) activeId=section.id;
+      });
+      navAnchors.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+activeId));
+
+      if(stepsList){
+        const r=stepsList.getBoundingClientRect();
+        const progress=Math.min(1, Math.max(0, (window.innerHeight*.72-r.top) / Math.max(1,r.height)));
+        stepsList.style.setProperty('--steps-progress', progress.toFixed(3));
+      }
+    }
+
+    if(window.matchMedia('(pointer:fine)').matches){
+      magneticItems.forEach(el=>{
+        el.addEventListener('pointermove',e=>{
+          const r=el.getBoundingClientRect();
+          const x=(e.clientX-r.left-r.width/2)*.16;
+          const y=(e.clientY-r.top-r.height/2)*.22;
+          el.style.setProperty('--mag-x', x.toFixed(1)+'px');
+          el.style.setProperty('--mag-y', y.toFixed(1)+'px');
+        });
+        el.addEventListener('pointerleave',()=>{
+          el.style.setProperty('--mag-x','0px');
+          el.style.setProperty('--mag-y','0px');
+        });
+      });
+
+      document.querySelectorAll('.owner-card').forEach(card=>{
+        card.addEventListener('pointermove',e=>{
+          const r=card.getBoundingClientRect();
+          const x=((e.clientX-r.left)/r.width)-.5;
+          const y=((e.clientY-r.top)/r.height)-.5;
+          card.style.setProperty('--tilt-y', (x*8).toFixed(2)+'deg');
+          card.style.setProperty('--tilt-x', (-y*7).toFixed(2)+'deg');
+        });
+        card.addEventListener('pointerleave',()=>{
+          card.style.setProperty('--tilt-y','0deg');
+          card.style.setProperty('--tilt-x','0deg');
+        });
+      });
+    }
+
     // ===================== 3D BRAND POINTER TILT =====================
     const brandWrap=document.querySelector('.big-logo-wrap');
     const brandLogo=document.querySelector('.big-logo-base');
@@ -1425,9 +1754,10 @@
       });
     });
 
-    window.addEventListener('scroll',updateFeatureStack,{passive:true});
-    window.addEventListener('resize',updateFeatureStack);
+    window.addEventListener('scroll',()=>{ updateFeatureStack(); updateSiteMotion(); },{passive:true});
+    window.addEventListener('resize',()=>{ updateFeatureStack(); updateSiteMotion(); });
     updateFeatureStack();
+    updateSiteMotion();
 
     // ===================== PARALLAX GLOW =====================
     const glow=document.querySelector('.hero-glow');
